@@ -1,8 +1,20 @@
-var newsModel = function(id, name, comment){
+var newsModel = function(id, name, avatar, comment, fulldate, link){
 	var self = this;
 	self.id = ko.observable(id);
 	self.name = ko.observable(name);
+	self.avatar = ko.observable(avatar);
+	self.imgavatar = ko.computed(function() {
+        return "<img src='usr/av/" + self.avatar() + "' width='47px' />";
+    });
 	self.comment = ko.observable(comment);
+	self.fulldate = ko.observable(fulldate);
+	self.link = ko.observable(link);
+	self.btnlink = ko.computed(function() {
+		if (self.link() != "") {
+		  return "<a class='button orange' href='" + self.link() + "'><i class='icon-music'></i></a>";
+	  	}
+    });
+
 };
 
 var model = function(){
@@ -11,14 +23,17 @@ var model = function(){
 	self.loadData = function(){
 		//fetch existing data from database
 		$.ajax({
-			url : 'includes/get_news.php',
+			url : 'includes/getinsertupdate_news.php',
 			dataType: 'json',
 			success: function(data){
-				for(var x in data){
-					var id = data[x]['id']
-					var name = data[x]['name'];
-					var comment = data[x]['comment'];
-					self.news.push(new newsModel(id, name, comment));
+				for(var i in data){
+					var id = data[i]['id']
+					var name = data[i]['name'];
+					var avatar = data[i]['avatar'];
+					var comment = data[i]['comment'];
+					var fulldate = data[i]['fulldate'];
+					var link = data[i]['link'];
+					self.news.push(new newsModel(id, name, avatar, comment, fulldate, link));
 				}
 				
 			}

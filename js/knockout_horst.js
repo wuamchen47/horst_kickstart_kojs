@@ -1,4 +1,4 @@
-var newsModel = function(id, name, avatar, comment, fulldate, link){
+    var newsModel = function(id, name, avatar, comment, fulldate, link){
 	var self = this;
 	self.id = ko.observable(id);
 	self.name = ko.observable(name);
@@ -23,7 +23,7 @@ var model = function(){
 	self.loadData = function(){
 		//fetch existing data from database
 		$.ajax({
-			url : 'includes/getinsertupdate_news.php',
+			url : 'includes/ajax_get_news.php',
 			dataType: 'json',
 			success: function(data){
 				for(var i in data){

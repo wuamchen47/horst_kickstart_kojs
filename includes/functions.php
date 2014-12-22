@@ -38,21 +38,21 @@ function login($email, $password, $mysqli) {
         if ($stmt->num_rows == 1) {
             // Wenn es den Benutzer gibt, dann wird überprüft ob das Konto
             // blockiert ist durch zu viele Login-Versuche
-            echo "num rows = 1";
+            //echo "num rows = 1";
 
             if (checkbrute($user_id, $mysqli) == true) {
                 // Konto ist blockiert 
                 // Schicke E-Mail an Benutzer, dass Konto blockiert ist
-                echo "checkbrutetrue";
+                //echo "checkbrutetrue";
                 return false;
             } else {
                 // Überprüfe, ob das Passwort in der Datenbank mit dem vom
                 // Benutzer angegebenen übereinstimmt.
-                echo "nobrute";
+                //echo "nobrute";
                 if ($db_password == $password) {
                     // Passwort ist korrekt!
                     // Hole den user-agent string des Benutzers.
-                    echo "password korrekt";
+                    echo "4";
                     $user_browser = $_SERVER['HTTP_USER_AGENT'];
                     // XSS-Schutz, denn eventuell wir der Wert gedruckt
                     $user_id = preg_replace("/[^0-9]+/", "", $user_id);
@@ -64,7 +64,7 @@ function login($email, $password, $mysqli) {
                     // Login erfolgreich.
                     return true;
                 } else {
-                    echo "wrong password";
+                    echo "wrongpass";
                     // Passwort ist nicht korrekt
                     // Der Versuch wird in der Datenbank gespeichert
                     $now = time();
@@ -75,7 +75,7 @@ function login($email, $password, $mysqli) {
             }
         } else {
             //Es gibt keinen Benutzer.
-            echo "no such user";
+            echo "nosuchuser";
             return false;
         }
     }
@@ -184,17 +184,17 @@ function esc_url($url) {
     }
 }
 
-function get_news($start_read, $npp, $mysqli) {
+function get_news($start_read, $npp, $private, $mysqli) {
 
-    if (login_check($mysqli) == true) {
-        $private = '1';
+    if ($private == true) {
+        $private = '';
     } else {
-        $private = '0';
+        $private = ' and n.private = 0';
     }
     
-    $sql = "SELECT n.id, u.name, u.avatar, n.text, DATE_FORMAT(n.time, '%d.%m.%Y') as fulldate, n.linkurl
+    $sql = "SELECT n.id, u.name, u.avatar, n.text, DATE_FORMAT(n.time, '%d.%m.%Y') as fulldate, DATE_FORMAT(n.time, '%T') as entry_day, n.linkurl, n.private
         FROM news n, user u 
-        WHERE n.user = u.id and n.private = $private
+        WHERE n.user = u.id $private
         ORDER BY n.id DESC LIMIT $start_read,$npp
         ";
     $news = $mysqli->query($sql);
@@ -205,9 +205,11 @@ function get_news($start_read, $npp, $mysqli) {
         $avatar = $row['avatar'];
         $comment = $row['text'];
         $fulldate = $row['fulldate'];
+        $time = $row['entry_day'];
         $link = $row['linkurl'];
+        $private = $row['private'];
         $news_r[] = array(
-            'id' => $id, 'name' => $name, 'avatar' => $avatar, 'comment' => $comment, 'fulldate' => $fulldate, 'link' => $link
+            'id' => $id, 'name' => $name, 'avatar' => $avatar, 'comment' => $comment, 'fulldate' => $fulldate, 'time' => $time, 'link' => $link, 'private' => $private
         );
     }
     

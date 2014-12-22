@@ -1,25 +1,37 @@
-    var newsModel = function(id, name, avatar, comment, fulldate, link){
+var news = function(id, name, avatar, comment, fulldate, t,  link, private){
 	var self = this;
 	self.id = ko.observable(id);
 	self.name = ko.observable(name);
 	self.avatar = ko.observable(avatar);
 	self.imgavatar = ko.computed(function() {
-        return "<img src='usr/av/" + self.avatar() + "' width='47px' />";
+        return "<img class='align-left' src='usr/av/" + self.avatar() + "' width='47px' />";
     });
-	self.comment = ko.observable(comment);
+	self.comment = ko.computed(function() {
+        if(link != ""){
+            return comment+"<a class='button blue small pull-right' href='" + link + "'><i class='icon-angle-right'></i> click</a>";
+        } else {
+            return comment;
+        }
+    });
+                               
 	self.fulldate = ko.observable(fulldate);
-	self.link = ko.observable(link);
-	self.btnlink = ko.computed(function() {
-		if (self.link() != "") {
-		  return "<a class='button orange' href='" + self.link() + "'><i class='icon-music'></i></a>";
+    self.t = ko.observable(t);
+	self.lockIcon = ko.computed(function() {
+        if (private == 1) {
+		  return "&nbsp;<i class='icon-lock'></i>";
 	  	}
-    });
-
+        });
 };
+
+
 
 var model = function(){
 	var self = this;
-	self.news = ko.observableArray([]);
+        self.email = ko.observable();
+        self.password = ko.observable();
+	self.hehe = ko.observable();
+        self.logoutUrl = ko.observable("includes/logout.php");
+        self.news = ko.observableArray([]);
 	self.loadData = function(){
 		//fetch existing data from database
 		$.ajax({
@@ -32,8 +44,10 @@ var model = function(){
 					var avatar = data[i]['avatar'];
 					var comment = data[i]['comment'];
 					var fulldate = data[i]['fulldate'];
+                    var t = data[i]['time'];
 					var link = data[i]['link'];
-					self.news.push(new newsModel(id, name, avatar, comment, fulldate, link));
+                    var private = data[i]['private'];
+					self.news.push(new news(id, name, avatar, comment, fulldate, t, link, private));
 				}
 				
 			}
@@ -44,7 +58,36 @@ var model = function(){
 		data that was returned from the server isn't a json string
 		*/
 	};
+        
+        //submit the form, before hash pw
+        self.processLogin = function(){
+            //console.log("processLogin");
+            self.hehe(hex_sha512(self.password()));
+            self.password("horst");
+            console.log(self.hehe());
+            
+            // der eigentliche Submit
+            $.ajax({
+			url : 'includes/ajax_process_login.php',
+                        type : 'POST',
+                        data: {
+                            e: self.email(),
+                            p: self.hehe()
+                        },
+                        success: function(data){    
+                            if(data=="47"){
+                                window.location='horst.php';
+                            }
+                            else    {
+                                window.location='horst.php?error='+data;
+                            }
+                        }
+        });
+        
+        
+      };
+        
 
-};
+}; 
 
 ko.applyBindings(new model());

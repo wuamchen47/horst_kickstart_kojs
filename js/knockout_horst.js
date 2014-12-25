@@ -29,35 +29,34 @@ var model = function(){
 	var self = this;
         self.email = ko.observable();
         self.password = ko.observable();
-	self.hehe = ko.observable();
-        self.logoutUrl = ko.observable("includes/logout.php");
+	    self.hehe = ko.observable();
         self.news = ko.observableArray([]);
-	self.loadData = function(){
-		//fetch existing data from database
-		$.ajax({
-			url : 'includes/ajax_get_news.php',
-			dataType: 'json',
-			success: function(data){
-				for(var i in data){
-					var id = data[i]['id']
-					var name = data[i]['name'];
-					var avatar = data[i]['avatar'];
-					var comment = data[i]['comment'];
-					var fulldate = data[i]['fulldate'];
-                    var t = data[i]['time'];
-					var link = data[i]['link'];
-                    var private = data[i]['private'];
-					self.news.push(new news(id, name, avatar, comment, fulldate, t, link, private));
-				}
-				
-			}
-		});
+	    self.loadNews = function(){
+            //fetch existing data from database
+            $.ajax({
+                url : 'includes/ajax_get_news.php',
+                dataType: 'json',
+                success: function(data){
+                    for(var i in data){
+                        var id = data[i]['id']
+                        var name = data[i]['name'];
+                        var avatar = data[i]['avatar'];
+                        var comment = data[i]['comment'];
+                        var fulldate = data[i]['fulldate'];
+                        var t = data[i]['time'];
+                        var link = data[i]['link'];
+                        var private = data[i]['private'];
+                        self.news.push(new news(id, name, avatar, comment, fulldate, t, link, private));
+                    }
 
-		/*
-		note: nothing would actually show up in the success function if the
-		data that was returned from the server isn't a json string
-		*/
-	};
+                }
+            });
+
+            /*
+            note: nothing would actually show up in the success function if the
+            data that was returned from the server isn't a json string
+            */
+        };
         
         //submit the form, before hash pw
         self.processLogin = function(){
@@ -65,10 +64,10 @@ var model = function(){
             self.hehe(hex_sha512(self.password()));
             self.password("horst");
             console.log(self.hehe());
-            
+
             // der eigentliche Submit
             $.ajax({
-			url : 'includes/ajax_process_login.php',
+            url : 'includes/ajax_process_login.php',
                         type : 'POST',
                         data: {
                             e: self.email(),
@@ -82,10 +81,16 @@ var model = function(){
                                 window.location='horst.php?error='+data;
                             }
                         }
-        });
+            });
+        };
         
-        
-      };
+        self.logout = function(){
+            window.location='includes/logout.php';
+        };
+    
+        self.loadPost = function(){
+             $("#postForm").load("includes/inc_post.php");
+        };
         
 
 }; 

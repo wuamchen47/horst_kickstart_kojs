@@ -1,4 +1,5 @@
-<div class="col_10" data-bind="event: { load: loadData() }">
+<?php if (login_check($mysqli) == true) { echo("<div id='postForm'></div>"); } ?>
+<div data-bind="event: { load: loadNews() }">
     <div data-bind="foreach: news">
         <div class="col_12 transp07">
             <div class="col_12">

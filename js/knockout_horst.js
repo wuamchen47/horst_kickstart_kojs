@@ -160,6 +160,7 @@ var model = function(){
                 self.postText("");
                 self.postLink("");
                 self.showPostForm(false);
+                self.lastNewsId("0");
                 self.loadNews();
             }
         });

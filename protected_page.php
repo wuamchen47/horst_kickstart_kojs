@@ -1,30 +1,35 @@
 <?php
-include_once 'includes/db_connect.php';
-include_once 'includes/functions.php';
- 
+error_reporting(E_ALL);
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/_globals/cfg_other.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/db_connect.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php");
+
 sec_session_start();
+TryCookieLogin($mysqli);	
+
+$header = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/layout/header.php";
+
+require($header);
 ?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Secure Login: Protected Page</title>
-        <link rel="stylesheet" href="styles/main.css" />
-    </head>
-    <body>
-        <?php if (login_check($mysqli) == true) : ?>
+<div class="grid">
+    <div class="col_10">
+      
+      <?php if (login_check($mysqli) == true) : ?>
             <p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p>
             <p>
-                This is an example protected page.  To access this page, users
-                must be logged in.  At some stage, we'll also check the role of
-                the user, so pages will be able to determine the type of user
-                authorised to access the page.
+                Eine Hilfsseite, um ein neues Passwort zu speichern.
             </p>
-            <p>Return to <a href="index.php">login page</a></p>
+            
         <?php else : ?>
             <p>
-                <span class="error">You are not authorized to access this page.</span> Please <a href="index.php">login</a>.
+                <span class="error">You are not authorized to access this page.</span>.
             </p>
         <?php endif; ?>
-    </body>
-</html>
+   
+    </div>
+</div>
+<?php
+    $footer = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/layout/footer.php";
+    require($footer);
+?>
+

@@ -6,13 +6,18 @@ include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php"
  
 sec_session_start(); // Unsere selbstgemachte sichere Funktion um eine PHP-Sitzung zu starten.
 
-if (isset($_POST['e'], $_POST['p'])) {
-    $email = $_POST['e'];
-    $password = $_POST['p']; // Das gehashte Passwort.
+if (isset($_POST['e'], $_POST['p'], $_POST['r'])) {
+    $email = save_get("e", "", $mysqli);
+    $password = save_get("p", "", $mysqli); // Das gehashte Passwort.
+    $remember = save_get("r", 0, $mysqli);
 
     if (login($email, $password, $mysqli) == true) {
-        // Login erfolgreich 
-        //header('Location: ../protected_page.php');
+        // Login erfolgreich
+        if ($remember)
+        {
+          SetLoginCookie();
+        }
+        
         echo("7");
     } else {
         // Login fehlgeschlagen 

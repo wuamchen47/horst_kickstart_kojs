@@ -7,11 +7,16 @@ include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php"
 sec_session_start();
 
 $start_read = 0;
-$npp = 47;
+$lid = 0;
+$npp = 10;
 $priv = 0;
 
 if (login_check($mysqli) == true) {
     $priv = 1;
+    $lid = save_get("lid", "", $mysqli);
+    if (is_numeric($lid) && $lid > 10) {
+      $start_read = $lid;
+    }
 }
 
 echo get_news($start_read, $npp, $priv, $mysqli);

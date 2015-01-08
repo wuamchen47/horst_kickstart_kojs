@@ -109,12 +109,11 @@ function checkbrute($user_id, $mysqli) {
 
 function login_check($mysqli) {
     // Überprüfe, ob alle Session-Variablen gesetzt sind 
-    if (isset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['login_string'])) {
+    if (isset($_SESSION['user_id'], $_SESSION['login_string'])) {
 
         $user_id = $_SESSION['user_id'];
         $login_string = $_SESSION['login_string'];
-        $username = $_SESSION['username'];
-
+        
         // Hole den user-agent string des Benutzers.
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
 
@@ -191,12 +190,20 @@ function get_news($start_read, $npp, $private, $mysqli) {
     } else {
         $private = ' and n.private = 0';
     }
+  
+    if ($start_read == 0) {
+        $start_read = "";
+    } else {
+        $start_read = " AND n.id < $start_read";
+    }
     
     $sql = "SELECT n.id, u.name, u.avatar, n.text, DATE_FORMAT(n.time, '%d.%m.%Y') as fulldate, DATE_FORMAT(n.time, '%T') as entry_day, n.linkurl, n.private
         FROM news n, user u 
         WHERE n.user = u.id $private
-        ORDER BY n.id DESC LIMIT $start_read,$npp
+        $start_read
+        ORDER BY n.id DESC LIMIT 0,$npp
         ";
+    //echo($sql);
     $news = $mysqli->query($sql);
     $news_r = array();
     while ($row = $news->fetch_array()) {
@@ -219,5 +226,106 @@ function get_news($start_read, $npp, $private, $mysqli) {
         return json_encode($news_r);
     }
 }
+
+function save_get($wert, $default, $db)
+{  
+  // get validated POST or GET variable
+  if (isset($_POST[$wert]))
+  {
+    return ValidateInput($_POST[$wert], $db);
+  }
+  else if (isset($_GET[$wert]))
+  {
+    return ValidateInput($_GET[$wert], $db);
+  }
+  else return $default;
+}
+
+function ValidateInput($input, $db)
+{
+  // entfernt unerlaubte zeichen und tags aus $input
+    $input = $db->real_escape_string(
+    (get_magic_quotes_gpc() == 1 ? stripslashes($input) : $input)
+  );
+  // bestimte Tags zulassen
+  $input =  strip_tags($input, '<b><img><font><center>'); 
+  return $input;
+}
+
+//Kedshandling
+function SetLoginCookie()
+{
+  if (isset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['login_string'])) {
+    $expire = time()+(3600*24*180); //180 tage
+    setcookie("keks_id",   $_SESSION['user_id'],         $expire, '/', false); // hostname=false needed to work on local webserver
+    setcookie("keks_pass", $_SESSION['login_string'], $expire, '/', false);
+  }
+}
+
+function GetCookie($wert, $default="")
+{
+  if (isset($_COOKIE[$wert]))
+    return $_COOKIE[$wert];
+  
+  return $default;
+}
+
+function SAFE_COOKIE($name, $db)
+{
+  // get validated cookie value
+  return ValidateInput(GetCookie($name), $db);
+}
+
+
+function TryCookieLogin($db)
+  {
+    if (login_check($db) == true)
+      return;
+	
+	// check if login cookie available
+    // if yes, attempt login
+	$cookId = SAFE_COOKIE("keks_id", $db);
+    $cookPass = SAFE_COOKIE("keks_pass", $db);
+	if ($cookId != "" && $cookPass != "")
+    {
+        //check analog login_check
+        $user_id = $cookId;
+        $login_string = $cookPass;
+        
+        // Hole den user-agent string des Benutzers.
+        $user_browser = $_SERVER['HTTP_USER_AGENT'];
+
+        if ($stmt = $db->prepare("SELECT password 
+                                      FROM members 
+                                      WHERE id = ? LIMIT 1")) {
+            // Bind "$user_id" zum Parameter. 
+            $stmt->bind_param('i', $user_id);
+            $stmt->execute();   // Execute the prepared query.
+            $stmt->store_result();
+
+            if ($stmt->num_rows == 1) {
+                // Wenn es den Benutzer gibt, hole die Variablen von result.
+                $stmt->bind_result($password);
+                $stmt->fetch();
+                $login_check = hash('sha512', $password . $user_browser);
+
+                if ($login_check == $login_string) {
+                    $_SESSION['user_id'] = $user_id;
+                    $_SESSION['login_string'] = hash('sha512', $password . $user_browser);
+                } else {
+                    // Nicht eingeloggt
+                    echo "not logged in";
+                }
+            } else {
+                // Nicht eingeloggt
+                echo "not logged in";
+            }
+        } else {
+            // Nicht eingeloggt
+            echo "not logged in";
+        }
+    }
+  }
+
 
 ?>

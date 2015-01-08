@@ -1,20 +1,22 @@
 <?php
-include_once 'includes/register.inc.php';
-include_once 'includes/functions.php';
+error_reporting(E_ALL);
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/_globals/cfg_other.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/db_connect.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php");
+
+sec_session_start();
+TryCookieLogin($mysqli);	
+
+$header = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/layout/header.php";
+
+require($header);
 ?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Secure Login: Registration Form</title>
-        <script type="text/JavaScript" src="js/sha512.js"></script> 
-        <script type="text/JavaScript" src="js/forms.js"></script>
-        <link rel="stylesheet" href="styles/main.css" />
-    </head>
-    <body>
-        <!-- Anmeldeformular für die Ausgabe, wenn die POST-Variablen nicht gesetzt sind
-        oder wenn das Anmelde-Skript einen Fehler verursacht hat. -->
-        <h1>Register with us</h1>
+<div class="grid">
+    <div class="col_10">
+      
+      <?php if (login_check($mysqli) == true) : ?>
+            <p>Welcome <?php echo htmlentities($_SESSION['username']); ?>!</p>
+            <h1>Register with us</h1>
         <?php
         if (!empty($error_msg)) {
             echo $error_msg;
@@ -54,6 +56,17 @@ include_once 'includes/functions.php';
                                    this.form.password,
                                    this.form.confirmpwd);" /> 
         </form>
-        <p>Return to the <a href="index.php">login page</a>.</p>
-    </body>
-</html>
+       
+            
+        <?php else : ?>
+            <p>
+                <span class="error">You are not authorized to access this page.</span>.
+            </p>
+        <?php endif; ?>
+   
+    </div>
+</div>
+<?php
+    $footer = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/layout/footer.php";
+    require($footer);
+?>

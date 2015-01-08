@@ -5,7 +5,7 @@
           password.value == ''  || 
           conf.value == '') {
  
-        alert('You must provide all the requested details. Please try again');
+        alert('Youuu must provide all the requested details. Please try again');
         return false;
     }
  

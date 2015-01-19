@@ -23,8 +23,8 @@ function sec_session_start() {
 
 function login($email, $password, $mysqli) {
     // Das Benutzen vorbereiteter Statements verhindert SQL-Injektion.
-    if ($stmt = $mysqli->prepare("SELECT id, username, password, salt
-                                    FROM members
+    if ($stmt = $mysqli->prepare("SELECT id, name, password, salt
+                                    FROM user
                                     WHERE email = ?
                                     LIMIT 1")) {
         $stmt->bind_param('s', $email); // Bind "$email" to parameter. 
@@ -118,7 +118,7 @@ function login_check($mysqli) {
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
 
         if ($stmt = $mysqli->prepare("SELECT password 
-                                      FROM members 
+                                      FROM user 
                                       WHERE id = ? LIMIT 1")) {
             // Bind "$user_id" zum Parameter. 
             $stmt->bind_param('i', $user_id);
@@ -183,6 +183,10 @@ function esc_url($url) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// get all the news including lazy load possibility
+//////////////////////////////////////////////////////////////////////////////
+
 function get_news($start_read, $npp, $private, $mysqli) {
 
     if ($private == true) {
@@ -210,7 +214,7 @@ function get_news($start_read, $npp, $private, $mysqli) {
         $id = $row['id'];
         $name = $row['name'];
         $avatar = $row['avatar'];
-        $comment = $row['text'];
+        $comment = insertImages($row['text']);
         $fulldate = $row['fulldate'];
         $time = $row['entry_day'];
         $link = $row['linkurl'];
@@ -226,6 +230,10 @@ function get_news($start_read, $npp, $private, $mysqli) {
         return json_encode($news_r);
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// Input Handling
+//////////////////////////////////////////////////////////////////////////////
 
 function save_get($wert, $default, $db)
 {  
@@ -252,7 +260,10 @@ function ValidateInput($input, $db)
   return $input;
 }
 
+//////////////////////////////////////////////////////////////////////////////
 //Kedshandling
+//////////////////////////////////////////////////////////////////////////////
+
 function SetLoginCookie()
 {
   if (isset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['login_string'])) {
@@ -276,6 +287,9 @@ function SAFE_COOKIE($name, $db)
   return ValidateInput(GetCookie($name), $db);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// Try Login with Cookie based on function login logic
+//////////////////////////////////////////////////////////////////////////////
 
 function TryCookieLogin($db)
   {
@@ -296,7 +310,7 @@ function TryCookieLogin($db)
         $user_browser = $_SERVER['HTTP_USER_AGENT'];
 
         if ($stmt = $db->prepare("SELECT password 
-                                      FROM members 
+                                      FROM user 
                                       WHERE id = ? LIMIT 1")) {
             // Bind "$user_id" zum Parameter. 
             $stmt->bind_param('i', $user_id);
@@ -326,6 +340,56 @@ function TryCookieLogin($db)
         }
     }
   }
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Smilie Converter + Insert Linebreak
+//////////////////////////////////////////////////////////////////////////////
+
+
+function insertImages($text)
+	{		
+		// text parsen und alle smilies durch links ersetzen
+		
+		$result = "";
+		$path = "smilies";
+        $text = str_replace("\n","<br/>",$text);
+    
+		$argl = explode(":!", $text);		
+		
+        for ($i=0; $i < count($argl); $i++) 
+		{			
+			// erstes vorkommen von ':' suchen
+			// wenn die 4 zeichen davor die gewünswchte dateiendung sind, treffer
+			// => string durch link ersetzen, rest normal anhängen
+			// wenn kein ':' vorkommt oder keine gesuchte datei drin ist, den teilstring 
+			// komplett an $result hängen
+			
+			$pos = strpos($argl[$i], ":");			
+			
+			if ($pos !== false)
+			{
+				$file = substr($argl[$i], 0, $pos);
+				
+				if (substr($file, -4) == ".gif" or substr($file, -4) == ".png")
+				{
+					$result .= "<img src='$path/$file' alt='' />";
+					$result .= substr($argl[$i], $pos+1);
+				}
+				else $result .= $argl[$i];
+			}
+			else
+			{		
+				$result .= $argl[$i];
+			}							
+			
+		}		
+		
+		return $result;
+		
+		//return $text;
+	}
 
 
 ?>

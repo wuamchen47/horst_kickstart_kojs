@@ -181,3 +181,7 @@ img.align-left, .img-wrap.align-left {
     float: left;
     margin: 5px 10px 5px 0;
 }
+#lazySmilies {
+  height: 100px;
+  overflow:scroll;
+}

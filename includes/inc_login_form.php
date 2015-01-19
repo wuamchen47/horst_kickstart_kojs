@@ -1,4 +1,4 @@
-<div id='loginForm' class='col_12'>
+<div id='loginForm'>
     <form data-bind="submit: processLogin">
         Emailt:      <input type="text" data-bind="value: email" />
         Password:   <input type="password" data-bind="value: password"/>

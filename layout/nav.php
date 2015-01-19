@@ -1,15 +1,24 @@
 <div class="col_12">
-	<h1 class="center"><img src="css/img/horstlogo.png"/></h1>
-	    <?php
-            
-            if (login_check($mysqli) == true) {
-                echo "<button data-bind='click: logout' class='large red pull-right'><i class='icon-signout'></i></button>";
-                echo "<button data-bind='click: togglePost' class='large orange pull-left'><i class='icon-comments'></i></button>";
-                $postForm = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/inc_post_form.php";
-                require($postForm);
-            } else {
-                $lgn = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/inc_login_form.php";
-                require($lgn);
-            }
-        ?>
+  <div class="col_6">
+    <?php
+      $logo = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/css/img/horstlogo.php";
+      require($logo);
+    ?>
+  </div>
+  <div class="col_6">
+  <?php if (login_check($mysqli) == true) { $postForm = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/inc_post_form.php"; ?>
+          <button data-bind='click: logout' class='large red pull-right'><i class='fa fa-sign-out'></i></button>
+          <button data-bind='click: togglePost' class='large orange pull-left'><i class='fa fa-comments'></i></button>
+  <?php } ?>
+  </div>
+</div>
+<div class="col_12">
+  <?php if (login_check($mysqli) == true) {
+          require($postForm);
+        }
+        else {
+          $lgn = $_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/inc_login_form.php";
+          require($lgn);
+        }
+  ?>
 </div>

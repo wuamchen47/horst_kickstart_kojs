@@ -54,7 +54,7 @@ var news = function(id, name, avatar, comment, fulldate, t,  link, private){
     });
 	self.comment = ko.computed(function() {
         if(link != ""){
-            return comment+"<a class='button blue small pull-right' href='" + link + "'><i class='icon-angle-right'></i> click</a>";
+            return comment+"<a class='button blue small pull-right' href='" + link + "'><i class='fa fa-angle-right'></i> click</a>";
         } else {
             return comment;
         }
@@ -64,7 +64,7 @@ var news = function(id, name, avatar, comment, fulldate, t,  link, private){
     self.t = ko.observable(t);
 	self.lockIcon = ko.computed(function() {
         if (private == 1) {
-		  return "&nbsp;<i class='icon-lock'></i>";
+		  return "&nbsp;<i class='fa fa-lock'></i>";
 	  	}
         });
 };
@@ -80,8 +80,9 @@ var model = function(){
     self.hehe = ko.observable();
     self.remember = ko.observable(false);
     self.showPostForm = ko.observable(false);
+    self.showSmilies = ko.observable(false);
     self.postPrivate = ko.observable(false);
-    self.postText = ko.observable();
+    self.postText = ko.observable("");
     self.postLink = ko.observable();
     self.news = ko.observableArray([]);
     self.lastNewsId = ko.observable("0");
@@ -174,9 +175,24 @@ var model = function(){
     self.togglePost = function(){
          self.showPostForm(!self.showPostForm());
     };
+  
+    self.toggleSmilies = function(){
+         self.showSmilies(!self.showSmilies());
+    };
+    
+    self.insertIntoText = function(smileItem){
+      self.postText(self.postText() + ":!" + smileItem + ":");
+    };
     
     //do initially
+    //load some news
     self.loadNews();
+    //activate lazy loding for smilies
+    $(function() {
+        $("img.lazy").lazyload({
+            effect : "fadeIn"
+        });
+    });
 
 }; 
 

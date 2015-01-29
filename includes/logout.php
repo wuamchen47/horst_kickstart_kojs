@@ -1,5 +1,5 @@
 <?php
-include_once ($_SERVER['DOCUMENT_ROOT']."/horst_kickstart_kojs/includes/functions.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php");
 sec_session_start();
  
 // Setze alle Session-Werte zurück 

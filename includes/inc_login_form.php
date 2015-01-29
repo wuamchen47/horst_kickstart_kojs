@@ -6,5 +6,4 @@
         Merk mich   <input type="checkbox" data-bind="checked: remember"/>
         <button type="submit">Submit</button>
     </form>
-    <p>If you don't have a login, please <a href="register.php">register</a></p>
 </div>

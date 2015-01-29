@@ -44,10 +44,16 @@ ko.bindingHandlers.scroll = {
 
 
 // outsourced
-var news = function(id, name, avatar, comment, fulldate, t,  link, private){
+var news = function(id, name, avatar, comment, fulldate, t,  link, private, edit){
 	var self = this;
 	self.newsId = ko.observable(id);
 	self.name = ko.observable(name);
+    self.showEdit = ko.computed(function() {
+        if(edit)
+          return true;
+        else
+          return false;
+    });
 	self.avatar = ko.observable(avatar);
 	self.imgavatar = ko.computed(function() {
         return "<img class='align-left' src='usr/av/" + self.avatar() + "' width='47px' />";
@@ -64,7 +70,7 @@ var news = function(id, name, avatar, comment, fulldate, t,  link, private){
     self.t = ko.observable(t);
 	self.lockIcon = ko.computed(function() {
         if (private == 1) {
-		  return "&nbsp;<i class='fa fa-lock'></i>";
+		  return "&nbsp;<i class='fa fa-lock fa-2x'></i>";
 	  	}
         });
 };
@@ -109,7 +115,8 @@ var model = function(){
                     var t = data[i]['time'];
                     var link = data[i]['link'];
                     var private = data[i]['private'];
-                    self.news.push(new news(id, name, avatar, comment, fulldate, t, link, private));
+                    var edit = data[i]['edit'];
+                    self.news.push(new news(id, name, avatar, comment, fulldate, t, link, private, edit));
                 }
               self.lastNewsId(id);
             }

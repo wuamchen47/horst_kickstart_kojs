@@ -1,28 +1,17 @@
- function regformhash(form, uid, email, password, conf) {
+ function regformhash(form, password, conf) {
      // Überprüfe, ob jedes Feld einen Wert hat
-    if (uid.value == ''         || 
-          email.value == ''     || 
-          password.value == ''  || 
+    if (password.value == ''  || 
           conf.value == '') {
  
-        alert('Youuu must provide all the requested details. Please try again');
+        alert('Alles ausfüllen, Meister!');
         return false;
-    }
- 
-    // Überprüfe den Benutzernamen
- 
-    re = /^\w+$/; 
-    if(!re.test(form.username.value)) { 
-        alert("Username must contain only letters, numbers and underscores. Please try again"); 
-        form.username.focus();
-        return false; 
     }
  
     // Überprüfe, dass Passwort lang genug ist (min 6 Zeichen)
     // Die Überprüfung wird unten noch einmal wiederholt, aber so kann man dem 
     // Benutzer mehr Anleitung geben
     if (password.value.length < 6) {
-        alert('Passwords must be at least 6 characters long.  Please try again');
+        alert('Check nochmal die Passwortregeln, kleiner Tipp: zu kurz...');
         form.password.focus();
         return false;
     }
@@ -32,13 +21,13 @@
  
     var re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/; 
     if (!re.test(password.value)) {
-        alert('Passwords must contain at least one number, one lowercase and one uppercase letter.  Please try again');
+        alert('Check nochmal die Passwortregeln...');
         return false;
     }
  
     // Überprüfe die Passwörter und bestätige, dass sie gleich sind
     if (password.value != conf.value) {
-        alert('Your password and confirmation do not match. Please try again');
+        alert('Die Passwörter stimmen nicht überein');
         form.password.focus();
         return false;
     }

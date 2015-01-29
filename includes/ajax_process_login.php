@@ -9,7 +9,7 @@ sec_session_start(); // Unsere selbstgemachte sichere Funktion um eine PHP-Sitzu
 if (isset($_POST['e'], $_POST['p'], $_POST['r'])) {
     $email = save_get("e", "", $mysqli);
     $password = save_get("p", "", $mysqli); // Das gehashte Passwort.
-    $remember = save_get("r", 0, $mysqli);
+    $remember = filter_var(save_get("r", 0, $mysqli), FILTER_VALIDATE_BOOLEAN);
 
     if (login($email, $password, $mysqli) == true) {
         // Login erfolgreich

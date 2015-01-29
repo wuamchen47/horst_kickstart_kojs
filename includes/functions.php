@@ -201,7 +201,7 @@ function get_news($start_read, $npp, $private, $mysqli) {
         $start_read = " AND n.id < $start_read";
     }
     
-    $sql = "SELECT n.id, u.name, u.avatar, n.text, DATE_FORMAT(n.time, '%d.%m.%Y') as fulldate, DATE_FORMAT(n.time, '%T') as entry_day, n.linkurl, n.private
+    $sql = "SELECT n.id, u.id as userid, u.name, u.avatar, n.text, DATE_FORMAT(n.time, '%d.%m.%Y') as fulldate, DATE_FORMAT(n.time, '%T') as entry_day, n.linkurl, n.private
         FROM news n, user u 
         WHERE n.user = u.id $private
         $start_read
@@ -213,6 +213,8 @@ function get_news($start_read, $npp, $private, $mysqli) {
     while ($row = $news->fetch_array()) {
         $id = $row['id'];
         $name = $row['name'];
+        $edit = false;
+        if (GetUserId() == $row['userid']) $edit = true;
         $avatar = $row['avatar'];
         $comment = insertImages($row['text']);
         $fulldate = $row['fulldate'];
@@ -220,7 +222,7 @@ function get_news($start_read, $npp, $private, $mysqli) {
         $link = $row['linkurl'];
         $private = $row['private'];
         $news_r[] = array(
-            'id' => $id, 'name' => $name, 'avatar' => $avatar, 'comment' => $comment, 'fulldate' => $fulldate, 'time' => $time, 'link' => $link, 'private' => $private
+            'id' => $id, 'name' => $name, 'avatar' => $avatar, 'comment' => $comment, 'fulldate' => $fulldate, 'time' => $time, 'link' => $link, 'private' => $private, 'edit' => $edit
         );
     }
     
@@ -261,7 +263,7 @@ function ValidateInput($input, $db)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-//Kedshandling
+//Kedshandling / Userhandling
 //////////////////////////////////////////////////////////////////////////////
 
 function SetLoginCookie()
@@ -287,9 +289,7 @@ function SAFE_COOKIE($name, $db)
   return ValidateInput(GetCookie($name), $db);
 }
 
-//////////////////////////////////////////////////////////////////////////////
 // Try Login with Cookie based on function login logic
-//////////////////////////////////////////////////////////////////////////////
 
 function TryCookieLogin($db)
   {
@@ -328,15 +328,36 @@ function TryCookieLogin($db)
                     $_SESSION['login_string'] = hash('sha512', $password . $user_browser);
                 } else {
                     // Nicht eingeloggt
+                  return false;
                 }
             } else {
                 // Nicht eingeloggt
+              return false;
             }
         } else {
             // Nicht eingeloggt
+          return false;
         }
     }
   }
+
+function GetUserId()
+{
+  return GetSession("user_id", 0);
+}
+
+function GetUserName()
+{
+  return GetSession("username", 0);
+}
+
+function GetSession($wert, $default="")
+{
+  if (isset($_SESSION[$wert]))
+    return $_SESSION[$wert];
+  return $default;
+}
+
 
 
 

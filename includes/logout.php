@@ -1,4 +1,5 @@
 <?php
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/../_globals/cfg_other.php");
 include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php");
 sec_session_start();
  

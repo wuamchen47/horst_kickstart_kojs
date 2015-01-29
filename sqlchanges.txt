@@ -1,1 +1,7 @@
-- users: spalte password & salt einfügen
+- login_attempts erstellen
+CREATE TABLE `secure_login`.`login_attempts` (
+    `user_id` INT(11) NOT NULL,
+    `time` VARCHAR(30) NOT NULL
+) ENGINE=InnoDB
+
+- users: spalte password & salt einfügen, char128 utf8_unicode_ci

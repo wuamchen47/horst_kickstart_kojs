@@ -101,7 +101,6 @@ var model = function(){
         $.ajax({
             url : 'includes/ajax_get_news.php',
             type : 'POST',
-            crossDomain: true,
             data: {
                 lid: self.lastNewsId()
             },

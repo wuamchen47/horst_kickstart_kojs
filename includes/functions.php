@@ -1,6 +1,6 @@
 <?php
 
-include_once ($_SERVER['DOCUMENT_ROOT'] . "/_globals/cfg_other.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/../_globals/cfg_other.php");
 
 function sec_session_start() {
     $session_name = 'sec_session_id';   // vergib einen Sessionnamen
@@ -328,15 +328,12 @@ function TryCookieLogin($db)
                     $_SESSION['login_string'] = hash('sha512', $password . $user_browser);
                 } else {
                     // Nicht eingeloggt
-                    echo "not logged in";
                 }
             } else {
                 // Nicht eingeloggt
-                echo "not logged in";
             }
         } else {
             // Nicht eingeloggt
-            echo "not logged in";
         }
     }
   }

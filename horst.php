@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-include_once ($_SERVER['DOCUMENT_ROOT'] . "/_globals/cfg_other.php");
+include_once ($_SERVER['DOCUMENT_ROOT'] . "/../_globals/cfg_other.php");
 include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/db_connect.php");
 include_once ($_SERVER['DOCUMENT_ROOT'] . "/" . SITE . "/includes/functions.php");
 

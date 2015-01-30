@@ -105,6 +105,7 @@ var model = function(){
                 lid: self.lastNewsId()
             },
             dataType: 'json',
+            contentType: 'application/json',
             success: function(data){
                 for(var i in data){
                     var id = data[i]['id']

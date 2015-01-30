@@ -19,6 +19,7 @@ if (login_check($mysqli) == true) {
     }
 }
 
+header('Content-Type: application/json');
 echo get_news($start_read, $npp, $priv, $mysqli);
 
 ?>

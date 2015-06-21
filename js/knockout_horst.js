@@ -98,7 +98,6 @@ var model = function(){
     // loads news in inc_news.php
     self.loadNews = function(){
         //fetch existing data from database
-        alert(self.lastNewsId()); 
         
         $.ajax({
             url : 'includes/ajax_get_news.php',

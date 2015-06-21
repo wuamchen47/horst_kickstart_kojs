@@ -409,5 +409,20 @@ function insertImages($text)
 		//return $text;
 	}
 
+//////////////////////////////////////////////////////////////////////////////
+// Debug helper
+//////////////////////////////////////////////////////////////////////////////
+
+  function console_log( $data ) {
+
+		$output = '';
+
+		// new and smaller version, easier to maintain
+		$output .= 'console.info( \'Debug in Console via Debug Objects Plugin:\' );';
+		$output .= 'console.log(' . json_encode( $data ) . ');';
+
+		echo '';
+	}
+
 
 ?>

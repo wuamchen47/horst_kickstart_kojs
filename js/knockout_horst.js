@@ -98,6 +98,8 @@ var model = function(){
     // loads news in inc_news.php
     self.loadNews = function(){
         //fetch existing data from database
+        alert(self.lastNewsId()); 
+        
         $.ajax({
             url : 'includes/ajax_get_news.php',
             type : 'POST',
@@ -105,7 +107,6 @@ var model = function(){
                 lid: self.lastNewsId()
             },
             dataType: 'json',
-            contentType: 'application/json',
             success: function(data){
                 for(var i in data){
                     var id = data[i]['id']

@@ -13,13 +13,15 @@ $priv = 0;
 
 if (login_check($mysqli) == true) {
     $priv = 1;
-    $lid = save_get("lid", "", $mysqli);
-    if (is_numeric($lid) && $lid > 10) {
-      $start_read = $lid;
+    if (isset($_POST['lid'])){
+      $lid = save_get("lid", "", $mysqli);
+      if (is_numeric($lid) && $lid > 10) {
+        $start_read = $lid;
+      }
     }
+
 }
 
 header('Content-Type: application/json');
 echo get_news($start_read, $npp, $priv, $mysqli);
-
 ?>

@@ -62,7 +62,7 @@ if (login_check($mysqli) == true) {
                       header('Location: ../chpw.php?err=Registration failure: INSERT');
                   }
               }
-              header('Location: ./chpw.php?success=chpw');
+              header('Location: ../chpw.php?success=chpw');
           }
       }
       else {

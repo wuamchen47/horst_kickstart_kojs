@@ -8,7 +8,7 @@
   <div class="col_6">
   <?php if (login_check($mysqli) == true) {  ?>
           <button data-bind='click: logout' class='large red pull-right'><i class='fa fa-sign-out'></i></button>
-          <button data-bind='click: togglePost' class='large orange pull-left'><i class='fa fa-comments'></i></button>
+          <button data-bind='click: togglePost' class='large orange pull-left'><i class='fa fa-comments'>&nbsp;<?php echo GetUserName(); ?></i></button>
   <?php } ?>
   </div>
 </div>

@@ -4,7 +4,7 @@
             <span data-bind="html: imgavatar"></span>
             <span class="horstName" data-bind="text: name"></span>&nbsp;<span data-bind="html: lockIcon"></span></br>
             <span class="horstTime" data-bind="text: fulldate"></span> | <span class="horstTime" data-bind="text: t"></span>
-            <button class="small" data-bind="visible: showEdit"><i class="fa fa-edit"></i>edit</button>
+            <button class="small" data-bind="visible: showEdit"><i class="fa fa-edit"></i>editgednid</button>
         </div>
         <div class="col_12">
             <blockquote class="small" data-bind="html: comment"></blockquote>

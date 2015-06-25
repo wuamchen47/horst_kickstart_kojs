@@ -43,40 +43,6 @@ ko.bindingHandlers.scroll = {
 // end extensions
 
 
-// outsourced
-var news = function(id, name, avatar, comment, fulldate, t,  link, private, edit){
-	var self = this;
-	self.newsId = ko.observable(id);
-	self.name = ko.observable(name);
-    self.showEdit = ko.computed(function() {
-        if(edit)
-          return true;
-        else
-          return false;
-    });
-	self.avatar = ko.observable(avatar);
-	self.imgavatar = ko.computed(function() {
-        return "<img class='align-left' src='usr/av/" + self.avatar() + "' width='47px' />";
-    });
-	self.comment = ko.computed(function() {
-        if(link != ""){
-            return comment+"<a class='button blue small pull-right' href='" + link + "'><i class='fa fa-angle-right'></i> click</a>";
-        } else {
-            return comment;
-        }
-    });
-                               
-	self.fulldate = ko.observable(fulldate);
-    self.t = ko.observable(t);
-	self.lockIcon = ko.computed(function() {
-        if (private == 1) {
-		  return "&nbsp;<i class='fa fa-lock fa-2x'></i>";
-	  	}
-        });
-};
-
-
-
 var model = function(){
     
     // define observables
@@ -90,11 +56,47 @@ var model = function(){
     self.postPrivate = ko.observable(false);
     self.postText = ko.observable("");
     self.postLink = ko.observable();
-    self.news = ko.observableArray([]);
-    self.lastNewsId = ko.observable("0");
     self.postWhat = ko.observable("newPost");
     
     //functions
+    
+    //news
+    self.news = ko.observableArray([]);
+    self.lastNewsId = ko.observable("0");
+    
+    var news = function(id, name, avatar, comment, fulldate, t,  link, private, edit){
+      var self = this;
+      self.newsId = ko.observable(id);
+      self.name = ko.observable(name);
+      self.showEdit = ko.computed(function() {
+          if(edit)
+            return true;
+          else
+            return false;
+      });
+      self.avatar = ko.observable(avatar);
+      self.imgavatar = ko.computed(function() {
+          return "<img class='align-left' src='usr/av/" + self.avatar() + "' width='47px' />";
+      });
+      self.comment = ko.computed(function() {
+          if(link != ""){
+              return comment+"<a class='button blue small pull-right' href='" + link + "'><i class='fa fa-angle-right'></i> click</a>";
+          } else {
+              return comment;
+          }
+      });
+
+      self.fulldate = ko.observable(fulldate);
+      self.t = ko.observable(t);
+      self.lockIcon = ko.computed(function() {
+          if (private == 1) {
+            return "&nbsp;<i class='fa fa-lock fa-2x'></i>";
+          }
+      });
+
+    };
+
+  
     // loads news in inc_news.php
     self.loadNews = function(){
         //fetch existing data from database
@@ -179,7 +181,7 @@ var model = function(){
     self.logout = function(){
         window.location='includes/logout.php';
     };
-    
+      
     self.togglePost = function(){
          self.showPostForm(!self.showPostForm());
     };
@@ -191,6 +193,7 @@ var model = function(){
     self.insertIntoText = function(smileItem){
       self.postText(self.postText() + ":!" + smileItem + ":");
     };
+
     
     //do initially
     //load some news

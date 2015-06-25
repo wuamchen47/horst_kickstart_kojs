@@ -16,6 +16,6 @@
     <script type="text/JavaScript" src="js/sha512.js"></script> 
     <script type="text/JavaScript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/kickstart.js"></script>
-    <script type="text/javascript" src="js/knockout-3.2.0.js"></script>
+    <script type="text/javascript" src="js/knockout-3.3.0.js"></script>
 </head>
 <body>
